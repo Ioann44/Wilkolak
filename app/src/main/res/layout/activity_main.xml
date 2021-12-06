@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+
+    <SeekBar
+        android:id="@+id/musicBar"
+        android:layout_width="130dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="78dp"
+        android:layout_marginEnd="72dp"
+        android:rotation="270"
+        android:thumb="@color/purple_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/soundBar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/soundBar"
+        android:layout_width="130dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="-16dp"
+        android:rotation="270"
+        android:thumb="@color/purple_500"
+        app:layout_constraintBottom_toBottomOf="@+id/musicBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/musicBar" />
+
+    <ImageView
+        android:id="@+id/musicImage"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/soundImage"
+        app:layout_constraintTop_toTopOf="@+id/soundImage"
+        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+    <ImageView
+        android:id="@+id/soundImage"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/soundBar"
+        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+    <ImageButton
+        android:id="@+id/startGameButton"
+        android:layout_width="342dp"
+        android:layout_height="91dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/choicePartButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameGame"
+        app:srcCompat="@drawable/start_game" />
+
+    <ImageButton
+        android:id="@+id/choicePartButton"
+        android:layout_width="254dp"
+        android:layout_height="61dp"
+        android:layout_marginBottom="40dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/choice_level" />
+
+    <ImageView
+        android:id="@+id/nameGame"
+        android:layout_width="476dp"
+        android:layout_height="128dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
