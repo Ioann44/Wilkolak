@@ -1,11 +1,10 @@
 package com.ioannscorporation.wilkolak;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton startButton, choiceButton;
@@ -17,19 +16,13 @@ public class MainActivity extends AppCompatActivity {
 
         startButton = findViewById(R.id.startGameButton);
         choiceButton = findViewById(R.id.choicePartButton);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //start game activity
-                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                MainActivity.this.startActivity(intent);
-            }
+        startButton.setOnClickListener(v -> {
+            //start game activity
+            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+            MainActivity.this.startActivity(intent);
         });
-        choiceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //start choice level activity
-            }
+        choiceButton.setOnClickListener(v -> {
+            //start choice level activity
         });
     }
 }
