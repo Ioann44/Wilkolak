@@ -56,15 +56,6 @@ public class GameView extends SurfaceView implements Runnable {
         lastTime = System.currentTimeMillis();
     }
 
-    @Override
-    public void run() {
-        while (isPlaying) {
-            update();
-            draw();
-            sleep();
-        }
-    }
-
     void update() {
         hunter.move(platforms, plMaxCol, plWidth);
     }
@@ -75,11 +66,16 @@ public class GameView extends SurfaceView implements Runnable {
 //            canvas.drawText(score + "", screenX / 2f, 164, paint);
 
             canvas.drawBitmap(background.image, background.x, background.y, paint);
-            for (ArrayList<Platform> plArr : platforms) {
-                for (Platform p : plArr) {
+
+            //отображение платформ (возможна оптимизация:
+            // - по горизонтали, сейчас в худшем случае выводится в 2 раза больше столбцов
+            // - бинарным поиском по вертикали (да и хотя бы break добавить))
+            int colMin = Math.max((hunter.x - UtilApp.screenX) / plWidth, 0);
+            int colMax = Math.min(colMin + UtilApp.screenX / plWidth + 1, plMaxCol);
+            for (int j = colMin; j < colMax; j++)
+                for (Platform p : platforms[j])
                     canvas.drawBitmap(p.image, p.x, p.y, paint);
-                }
-            }
+
             canvas.drawBitmap(hunter.image, hunter.x, hunter.y, paint);
 
             getHolder().unlockCanvasAndPost(canvas);
@@ -121,6 +117,15 @@ public class GameView extends SurfaceView implements Runnable {
             e.printStackTrace();
         }
         lastTime = curTime;
+    }
+
+    @Override
+    public void run() {
+        while (isPlaying) {
+            update();
+            draw();
+            sleep();
+        }
     }
 
     public void resume() {

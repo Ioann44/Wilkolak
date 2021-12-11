@@ -39,28 +39,24 @@ public class Hunter extends GameObject {
             }
         }
 
-
-        //fix
-        int colMin, colMax;
-        colMin = (x - UtilApp.screenX / 2) / plWidth - 1;
-        colMin = Math.max(0, colMin);
-        colMax = colMin + UtilApp.screenX / plWidth + 2;
-        colMax = Math.min(colMax, plMaxCol);
+        //colMin и colMax определяют необходимые для проверки столбцы
+        //для горизонтальной проверки особо широких объектов правильнее использовать только 2 стобца
+        //с индексами colMin и colMax (для вертикальной нужны все в этом отрезке)
+        //обе проверки можно оптимизировать бинарным поиском (по платформам в столбце)
 
         //move & fix horizontally
         x += speedX;
-        for (int j = colMin; j < colMax; j++) {
+        int colMin = x / plWidth, colMax = (x + width) / plWidth;
+        for (int j = colMin; j <= colMax; j++) {
             for (Platform p : platforms[j]) {
-                if (y + height > p.y && y < p.y + p.height && x + width > p.x && x < p.x + p.width) {
+                if (y + height > p.y && y < p.y + p.height) {
                     if (speedX > 0) {
                         x = p.x - width;
                         speedX = 0; //можно имитировать отскакиваение
-                        j = colMax; //закончить проверку
                         break;
                     } else if (speedX < 0) {
                         x = p.x + p.width;
                         speedX = 0;
-                        j = colMax; //закончить проверку
                         break;
                     }
                 }
@@ -68,19 +64,19 @@ public class Hunter extends GameObject {
         }
         //move & fix vertically
         y -= speedY;
-        for (int j = colMin; j < colMax; j++) {
+        colMin = x / plWidth; //повторное вычисление необходимо т.к. после горизонтальной проверки
+        colMax = (x + width) / plWidth; // объект мог сдвинуться на значительное расстояние
+        for (int j = colMin; j <= colMax; j++) {
             for (Platform p : platforms[j]) {
-                if (y + height > p.y && y < p.y + p.height && x + width > p.x && x < p.x + p.width) {
+                if (y + height > p.y && y < p.y + p.height) {
                     if (speedY < 0) {
                         y = p.y - height;
                         readyToJump = true;
                         speedY = 0;
-                        j = colMax; //закончить проверку
                         break;
                     } else if (speedY > 0) {
                         y = p.y + p.height;
                         speedY = 0;
-                        j = colMax; //закончить проверку
                         break;
                     }
                 }
