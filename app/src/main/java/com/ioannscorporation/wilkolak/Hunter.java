@@ -1,5 +1,7 @@
 package com.ioannscorporation.wilkolak;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Hunter extends GameObject {
@@ -25,7 +27,6 @@ public class Hunter extends GameObject {
         if (goLeft && goRight) { // is jumping
             if (readyToJump) {
                 speedY = jumpPower;
-                readyToJump = false;
             }
         } else if (goLeft) {
             speedX = Math.max(-maxSpeed, speedX - acceleration);
@@ -38,6 +39,11 @@ public class Hunter extends GameObject {
                 speedX = Math.min(0, speedX + acceleration / 2);
             }
         }
+
+        //Сброс возможности прыжка, чтобы не прыгнуть после того как упал с обрыва
+        //в итоге стоя на поверхности можно прыгать в половине случаев, т.е. 1 0 1 0 1 0 1 0
+        //но это не имеет значения т.к. прыжок можно "зажать"
+        readyToJump = false;
 
         //colMin и colMax определяют необходимые для проверки столбцы
         //для горизонтальной проверки особо широких объектов правильнее использовать только 2 стобца
