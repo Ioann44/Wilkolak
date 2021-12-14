@@ -3,10 +3,13 @@ package com.ioannscorporation.wilkolak;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -22,6 +25,7 @@ public class GameView extends SurfaceView implements Runnable {
     Paint paint;
     SharedPreferences prefs;
     GameActivity activity;
+    MediaPlayer mPlayer;
     long delayTime = 22; // 1000 / fps
     long lastTime;
     boolean[] touchedIndexes = new boolean[10];
@@ -43,16 +47,19 @@ public class GameView extends SurfaceView implements Runnable {
         UtilApp.screenRatioX = 1920f / screenX;
         UtilApp.screenRatioY = 1080f / screenY;
 
+        mPlayer = MediaPlayer.create(activity, R.raw.sound_forest);
+        mPlayer.start();
+
         paint = new Paint();
         paint.setTextSize(128);
         paint.setColor(Color.WHITE);
 
 //        background = new GameObject(R.drawable.background, 0, 0, screenX, screenY);
         background = new GameObject(R.drawable.background_forest, 0, 0, screenX, screenY);
-        player = new AdvancedAlive(R.drawable.wolf_black, 200, 200, 340, 200, 2, 3);
-        platforms = loadLevel(R.raw.level);
+//        player = new AdvancedAlive(R.drawable.wolf_black, 200, 200, 340, 200, 2, 3);
+        platforms = loadLevel(R.raw.level1);
         plMaxCol = platforms.length;
-        plMaxRaw = platforms[0].size();
+        plMaxRaw = platforms[0].get(platforms[0].size() - 1).y / plWidth + 1;
 
         lastTime = System.currentTimeMillis();
     }
@@ -111,13 +118,49 @@ public class GameView extends SurfaceView implements Runnable {
         for (int j = 0; j < m; j++) {
             res[j] = new ArrayList<>(); //без этой инициализации не работает
         }
-        //сейчас считанные строки не хранятся отдельно, лучше сначала всех их сохранить,
-        //а потом на основе считанной матрицы создавать платформы с нужным изображением
+
+        //"нарезка" тайлсета
+        Bitmap[][] tileSet = new Bitmap[3][3];
+        int refToTile = R.drawable.forest_tiles;
+        int tileWidth = BitmapFactory.decodeResource(UtilApp.res, refToTile).getWidth() / 3;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                tileSet[i][j] = UtilApp.GetSubImage(refToTile, tileWidth, tileWidth, i, j);
+            }
+        }
+
+        //чтение матрицы
+        char[][] levelMatrix = new char[n][m];
         for (int i = 0; i < n; i++) {
-            char[] strArr = sc.next().toCharArray();
+            levelMatrix[i] = sc.next().toCharArray();
+        }
+
+        //построение платформ
+        byte tlX, tlY; //индексы для получения изображения из тайлсета
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (strArr[j] == 'o') {
-                    res[j].add(new Platform(R.drawable.forest_bit, j * width, i * width, width));
+                if (levelMatrix[i][j] == 'o') {
+                    //определение изображения для платформы
+                    // - по горизонтали
+                    if (j != 0 && levelMatrix[i][j - 1] != 'o')
+                        tlX = 0;
+                    else if (j != m - 1 && levelMatrix[i][j + 1] != 'o')
+                        tlX = 2;
+                    else
+                        tlX = 1;
+                    // - по вертикали
+                    if (i != 0 && levelMatrix[i - 1][j] != 'o')
+                        tlY = 0;
+                    else if (i != n - 1 && levelMatrix[i + 1][j] != 'o')
+                        tlY = 2;
+                    else
+                        tlY = 1;
+                    //создание платформы
+                    res[j].add(new Platform(tileSet[tlY][tlX], j * width, i * width, width));
+                } else if (levelMatrix[i][j] == 'p') {
+                    //создание игрока
+                    player = new AdvancedAlive(
+                            R.drawable.wolf_black, j * width, i * width, 340, 200, 2, 3);
                 }
             }
         }
@@ -147,6 +190,7 @@ public class GameView extends SurfaceView implements Runnable {
         isPlaying = true;
         thread = new Thread(this);
         thread.start();
+        mPlayer.start();
     }
 
     public void pause() {
@@ -157,7 +201,7 @@ public class GameView extends SurfaceView implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        mPlayer.pause();
     }
 
     @SuppressLint("ClickableViewAccessibility")

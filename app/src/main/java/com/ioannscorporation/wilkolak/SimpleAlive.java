@@ -1,23 +1,17 @@
 package com.ioannscorporation.wilkolak;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class SimpleAlive extends GameObject {
     float acceleration = 0.75f,
             gravity = -0.5f,
-            jumpPower = 20;
+            jumpPower = 22;
 
     float speedX = 0, speedY = 0, maxSpeed = 15;
     public boolean goLeft = false, goRight = false, readyToJump = true;
 
-    public SimpleAlive(int imageRef, int x, int y) {
-        super(imageRef, x, y, 200, 200);
-    }
-
-    public SimpleAlive(int x, int y) {
-        super(R.drawable.turbo, x, y, 200, 200);
+    public SimpleAlive(int imageRef, int x, int y, int width, int height) {
+        super(imageRef, x, y, width, height);
     }
 
     public SimpleAlive() {
@@ -56,7 +50,7 @@ public class SimpleAlive extends GameObject {
         //move & fix horizontally
         x += speedX;
         int colMin = x / plWidth;
-        int colMax = (x + width) / plWidth;
+        int colMax = Math.min((x + width) / plWidth, plMaxCol - 1);
         int curCol;
         if (speedX >= 0) {
             curCol = colMax;
@@ -79,7 +73,7 @@ public class SimpleAlive extends GameObject {
         //move & fix vertically
         y -= speedY;
         colMin = x / plWidth; //повторное вычисление необходимо т.к. после горизонтальной проверки
-        colMax = (x + width - 1) / plWidth; // объект мог сдвинуться на значительное расстояние
+        colMax = Math.min((x + width - 1) / plWidth, plMaxCol - 1); // объект мог сдвинуться на значительное расстояние
         //-1 необходимо, иначе проверка будет идти даже если объект только касается платформы
         for (int j = colMin; j <= colMax; j++) {
             for (Platform p : platforms[j]) {

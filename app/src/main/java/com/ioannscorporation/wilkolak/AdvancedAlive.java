@@ -2,7 +2,6 @@ package com.ioannscorporation.wilkolak;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 
 public class AdvancedAlive extends SimpleAlive {
     Bitmap[][][] images;
@@ -22,12 +21,10 @@ public class AdvancedAlive extends SimpleAlive {
         Bitmap fullImage = BitmapFactory.decodeResource(UtilApp.res, imageRef);
         fullImage = Bitmap.createScaledBitmap(fullImage, width * cols, height * rows, false);
         images = new Bitmap[2][rows][cols];
-        Matrix matrix = new Matrix();
-        matrix.preScale(-1f, 1f);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 images[1][i][j] = Bitmap.createBitmap(fullImage, j * width, i * height, width, height);
-                images[0][i][j] = Bitmap.createBitmap(images[1][i][j], 0, 0, width, height, matrix, true);
+                images[0][i][j] = UtilApp.FlipImage(images[1][i][j], true, false);
             }
         }
         image = images[0][0][0];
