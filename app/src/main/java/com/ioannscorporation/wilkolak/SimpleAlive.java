@@ -93,11 +93,12 @@ public class SimpleAlive extends GameObject {
         }
 
         //check the main borders
-        if (x < 0) {
-            x = 0;
+        if (speedX < 0 && x < 0) {
+            x = -1;
             speedX = 0;
-        } else if (x + width > plMaxCol * plWidth) {
-            x = plMaxCol * plWidth - width;
+        } else if (speedX > 0 && x + width > plMaxCol * plWidth) {
+            x = plMaxCol * plWidth - width + 1;
+            speedX = 0;
         }
         if (y < 0) {
             y = 0;
