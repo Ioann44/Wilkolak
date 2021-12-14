@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class Hunter extends GameObject {
+public class SimpleAlive extends GameObject {
     float acceleration = 0.75f,
             gravity = -0.5f,
             jumpPower = 20;
@@ -12,15 +12,18 @@ public class Hunter extends GameObject {
     float speedX = 0, speedY = 0, maxSpeed = 15;
     public boolean goLeft = false, goRight = false, readyToJump = true;
 
-    public Hunter(int imageRef, int x, int y) {
+    public SimpleAlive(int imageRef, int x, int y) {
         super(imageRef, x, y, 200, 200);
     }
 
-    public Hunter(int x, int y) {
+    public SimpleAlive(int x, int y) {
         super(R.drawable.turbo, x, y, 200, 200);
     }
 
-    public void move(ArrayList<Platform>[] platforms, int plMaxCol, int plWidth) {
+    public SimpleAlive() {
+    }
+
+    public void Move(ArrayList<Platform>[] platforms, int plMaxCol, int plWidth) {
         //update speed
         speedY += gravity;
 

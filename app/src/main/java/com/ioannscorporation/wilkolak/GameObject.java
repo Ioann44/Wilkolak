@@ -20,6 +20,9 @@ public class GameObject {
         this.height = height;
     }
 
+    public GameObject() {
+    }
+
     public boolean IsCollide(GameObject obj) {
         return (x + width > obj.x && x < obj.x + obj.width) &&
                 (y + height > obj.y && y < obj.y + obj.height);

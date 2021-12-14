@@ -27,7 +27,7 @@ public class GameView extends SurfaceView implements Runnable {
     boolean[] touchedIndexes = new boolean[10];
 
     GameObject background;
-    Hunter hunter;
+    AdvancedAlive player;
     ArrayList<Platform>[] platforms;
     final int plMaxCol, plMaxRaw;
     final int plWidth = 150;
@@ -49,7 +49,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 //        background = new GameObject(R.drawable.background, 0, 0, screenX, screenY);
         background = new GameObject(R.drawable.background_forest, 0, 0, screenX, screenY);
-        hunter = new Hunter(150, 150);
+        player = new AdvancedAlive(R.drawable.wolf_black, 200, 200, 340, 200, 2, 3);
         platforms = loadLevel(R.raw.level);
         plMaxCol = platforms.length;
         plMaxRaw = platforms[0].size();
@@ -58,7 +58,8 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     void update() {
-        hunter.move(platforms, plMaxCol, plWidth);
+        player.Move(platforms, plMaxCol, plWidth);
+        player.UpdateImage();
     }
 
     void draw() {
@@ -68,14 +69,14 @@ public class GameView extends SurfaceView implements Runnable {
 
             canvas.drawBitmap(background.image, background.x, background.y, paint);
 
-            int dX = hunter.x + hunter.width / 2 - UtilApp.screenX / 2;
+            int dX = player.x + player.width / 2 - UtilApp.screenX / 2;
             dX = Math.max(dX, 0);
             dX = Math.min(dX, plMaxCol * plWidth - UtilApp.screenX);
-            int dY = hunter.y + hunter.height / 2 - UtilApp.screenY / 2;
+            int dY = player.y + player.height / 2 - UtilApp.screenY / 2;
             dY = Math.max(dY, 0);
             dY = Math.min(dY, plMaxRaw * plWidth - UtilApp.screenY);
 
-            int colMin = Math.max((hunter.x - UtilApp.screenX) / plWidth, 0);
+            int colMin = Math.max((player.x - UtilApp.screenX) / plWidth, 0);
             int colMax = Math.min(colMin + UtilApp.screenX * 2 / plWidth, plMaxCol);
             //отображение платформ (возможна оптимизация:
             // - по горизонтали, сейчас в худшем случае выводится в 2 раза больше столбцов
@@ -90,7 +91,7 @@ public class GameView extends SurfaceView implements Runnable {
                     canvas.drawBitmap(p.image, p.x - dX, p.y - dY, paint);
                 }
 
-            canvas.drawBitmap(hunter.image, hunter.x - dX, hunter.y - dY, paint);
+            canvas.drawBitmap(player.image, player.x - dX, player.y - dY, paint);
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -165,7 +166,7 @@ public class GameView extends SurfaceView implements Runnable {
         int pointerCount = event.getPointerCount();
         int pointerIndex = event.getActionIndex();
         int action = event.getActionMasked();
-        hunter.goLeft = hunter.goRight = false;
+        player.goLeft = player.goRight = false;
         if (action == MotionEvent.ACTION_UP) {
             return true;
         }
@@ -174,9 +175,9 @@ public class GameView extends SurfaceView implements Runnable {
             Point touchLoc = new Point((int) event.getX(i), (int) event.getY(i));
             if (touchedIndexes[i]) {
                 if (touchLoc.x < UtilApp.screenX / 2f) {
-                    hunter.goLeft = true;
+                    player.goLeft = true;
                 } else {
-                    hunter.goRight = true;
+                    player.goRight = true;
                 }
             }
         }
