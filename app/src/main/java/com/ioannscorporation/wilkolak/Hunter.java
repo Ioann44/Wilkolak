@@ -46,32 +46,38 @@ public class Hunter extends GameObject {
         readyToJump = false;
 
         //colMin и colMax определяют необходимые для проверки столбцы
-        //для горизонтальной проверки особо широких объектов правильнее использовать только 2 стобца
+        //для горизонтальной проверки используется только 1 столбец (в зависимости от скорости)
         //с индексами colMin и colMax (для вертикальной нужны все в этом отрезке)
         //обе проверки можно оптимизировать бинарным поиском (по платформам в столбце)
 
         //move & fix horizontally
         x += speedX;
-        int colMin = x / plWidth, colMax = (x + width) / plWidth;
-        for (int j = colMin; j <= colMax; j++) {
-            for (Platform p : platforms[j]) {
-                if (y + height > p.y && y < p.y + p.height) {
-                    if (speedX > 0) {
-                        x = p.x - width;
-                        speedX = 0; //можно имитировать отскакиваение
-                        break;
-                    } else if (speedX < 0) {
-                        x = p.x + p.width;
-                        speedX = 0;
-                        break;
-                    }
+        int colMin = x / plWidth;
+        int colMax = (x + width) / plWidth;
+        int curCol;
+        if (speedX >= 0) {
+            curCol = colMax;
+        } else {
+            curCol = colMin;
+        }
+        for (Platform p : platforms[curCol]) {
+            if (y + height > p.y && y < p.y + p.height) {
+                if (speedX > 0) {
+                    x = p.x - width;
+                    speedX = 0; //можно имитировать отскакиваение
+                    break;
+                } else if (speedX < 0) {
+                    x = p.x + p.width;
+                    speedX = 0;
+                    break;
                 }
             }
         }
         //move & fix vertically
         y -= speedY;
         colMin = x / plWidth; //повторное вычисление необходимо т.к. после горизонтальной проверки
-        colMax = (x + width) / plWidth; // объект мог сдвинуться на значительное расстояние
+        colMax = (x + width - 1) / plWidth; // объект мог сдвинуться на значительное расстояние
+        //-1 необходимо, иначе проверка будет идти даже если объект только касается платформы
         for (int j = colMin; j <= colMax; j++) {
             for (Platform p : platforms[j]) {
                 if (y + height > p.y && y < p.y + p.height) {

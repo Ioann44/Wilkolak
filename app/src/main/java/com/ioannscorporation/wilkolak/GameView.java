@@ -29,7 +29,7 @@ public class GameView extends SurfaceView implements Runnable {
     GameObject background;
     Hunter hunter;
     ArrayList<Platform>[] platforms;
-    final int plMaxCol;
+    final int plMaxCol, plMaxRaw;
     final int plWidth = 150;
 
     public GameView(GameActivity activity, int screenX, int screenY) {
@@ -52,6 +52,7 @@ public class GameView extends SurfaceView implements Runnable {
         hunter = new Hunter(150, 150);
         platforms = loadLevel(R.raw.level);
         plMaxCol = platforms.length;
+        plMaxRaw = platforms[0].size();
 
         lastTime = System.currentTimeMillis();
     }
@@ -67,16 +68,29 @@ public class GameView extends SurfaceView implements Runnable {
 
             canvas.drawBitmap(background.image, background.x, background.y, paint);
 
+            int dX = hunter.x + hunter.width / 2 - UtilApp.screenX / 2;
+            dX = Math.max(dX, 0);
+            dX = Math.min(dX, plMaxCol * plWidth - UtilApp.screenX);
+            int dY = hunter.y + hunter.height / 2 - UtilApp.screenY / 2;
+            dY = Math.max(dY, 0);
+            dY = Math.min(dY, plMaxRaw * plWidth - UtilApp.screenY);
+
+            int colMin = Math.max((hunter.x - UtilApp.screenX) / plWidth, 0);
+            int colMax = Math.min(colMin + UtilApp.screenX * 2 / plWidth, plMaxCol);
             //отображение платформ (возможна оптимизация:
             // - по горизонтали, сейчас в худшем случае выводится в 2 раза больше столбцов
-            // - бинарным поиском по вертикали (да и хотя бы break добавить))
-            int colMin = Math.max((hunter.x - UtilApp.screenX) / plWidth, 0);
-            int colMax = Math.min(colMin + UtilApp.screenX / plWidth + 1, plMaxCol);
+            // - бинарным поиском по вертикали (на небольших значениях возможно бесполезно)
             for (int j = colMin; j < colMax; j++)
-                for (Platform p : platforms[j])
-                    canvas.drawBitmap(p.image, p.x, p.y, paint);
+                for (Platform p : platforms[j]) {
+                    int toDrawY = p.y - dY;
+                    if (toDrawY < -p.height)
+                        continue;
+                    else if (toDrawY > UtilApp.screenY)
+                        break;
+                    canvas.drawBitmap(p.image, p.x - dX, p.y - dY, paint);
+                }
 
-            canvas.drawBitmap(hunter.image, hunter.x, hunter.y, paint);
+            canvas.drawBitmap(hunter.image, hunter.x - dX, hunter.y - dY, paint);
 
             getHolder().unlockCanvasAndPost(canvas);
         }
