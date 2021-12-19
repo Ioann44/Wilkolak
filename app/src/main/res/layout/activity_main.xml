@@ -11,39 +11,26 @@
         android:id="@+id/startGameButton"
         android:layout_width="342dp"
         android:layout_height="91dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="44dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/choicePartButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.889"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameGame"
         app:srcCompat="@drawable/start_game" />
 
     <ImageButton
         android:id="@+id/choicePartButton"
         android:layout_width="254dp"
         android:layout_height="61dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="68dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.823"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/choice_level" />
-
-    <ImageView
-        android:id="@+id/nameGame"
-        android:layout_width="476dp"
-        android:layout_height="128dp"
-        android:layout_marginTop="24dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

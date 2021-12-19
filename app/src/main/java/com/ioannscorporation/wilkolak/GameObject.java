@@ -29,4 +29,14 @@ public class GameObject {
         return (x + width > obj.x && x < obj.x + obj.width) &&
                 (y + height > obj.y && y < obj.y + obj.height);
     }
+
+    //Для оптимизации вывода на экран,
+    //позволяет отсечь объекты, находящиеся на значительном расстоянии,
+    //отсекает НЕ ВСЕ не попадающие в поле зрения объекты.
+    //Может работать неправильно если размеры объектов соизмеримы с экраном.
+    //В данном случае упор сделан на наглядность и скорость.
+    public boolean IsInView(GameObject obj) {
+        return Math.abs(x - obj.x) < UtilApp.screenX << 1 &&
+                Math.abs(y - obj.y) < UtilApp.screenY << 1;
+    }
 }

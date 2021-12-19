@@ -15,6 +15,8 @@ import android.view.SurfaceView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 @SuppressLint("ViewConstructor")
@@ -28,6 +30,7 @@ public class GameView extends SurfaceView implements Runnable {
     MediaPlayer mPlayer;
     long delayTime = 22; // 1000 / fps
     long lastTime;
+    int gameTime;
     boolean[] touchedIndexes = new boolean[10];
 
     GameObject background;
@@ -35,6 +38,8 @@ public class GameView extends SurfaceView implements Runnable {
     ArrayList<Platform>[] platforms;
     final int plMaxCol, plMaxRaw;
     final int plWidth = 150;
+
+    LinkedList<GameObject> cups = new LinkedList<>();
 
     public GameView(GameActivity activity, int screenX, int screenY) {
         super(activity);
@@ -51,28 +56,36 @@ public class GameView extends SurfaceView implements Runnable {
         mPlayer.start();
 
         paint = new Paint();
-        paint.setTextSize(128);
+        paint.setTextSize(100);
         paint.setColor(Color.WHITE);
 
-//        background = new GameObject(R.drawable.background, 0, 0, screenX, screenY);
         background = new GameObject(R.drawable.background_forest, 0, 0, screenX, screenY);
-//        player = new AdvancedAlive(R.drawable.wolf_black, 200, 200, 340, 200, 2, 3);
         platforms = loadLevel(R.raw.level1);
         plMaxCol = platforms.length;
         plMaxRaw = platforms[0].get(platforms[0].size() - 1).y / plWidth + 1;
 
         lastTime = System.currentTimeMillis();
+        gameTime = 0;
     }
 
     void update() {
         player.Move(platforms, plMaxCol, plWidth);
+        //Сбор кубков
+        {
+            Iterator<GameObject> it = cups.iterator();
+            while (it.hasNext()) {
+                if (it.next().IsCollide(player)) {
+                    it.remove();
+                }
+            }
+        }
         player.UpdateImage();
+        gameTime += delayTime;
     }
 
     void draw() {
         if (getHolder().getSurface().isValid()) {
             Canvas canvas = getHolder().lockCanvas();
-//            canvas.drawText(score + "", screenX / 2f, 164, paint);
 
             canvas.drawBitmap(background.image, background.x, background.y, paint);
 
@@ -98,7 +111,31 @@ public class GameView extends SurfaceView implements Runnable {
                     canvas.drawBitmap(p.image, p.x - dX, p.y - dY, paint);
                 }
 
+            //отображение целей
+            for (GameObject cup : cups) {
+                if (player.IsInView(cup))
+                    canvas.drawBitmap(cup.image, cup.x - dX, cup.y - dY, paint);
+            }
+
             canvas.drawBitmap(player.image, player.x - dX, player.y - dY, paint);
+
+            //Вывод значения секундомера
+            {
+                String timeSec = String.valueOf(gameTime / 1000),
+                        timeHundredthSec = String.valueOf(gameTime % 1000 / 10);
+                int diffX = timeSec.length() * 100;
+                canvas.drawText(
+                        timeSec + ':' + timeHundredthSec,
+                        UtilApp.screenX * 0.9f - diffX,
+                        UtilApp.screenY * 0.1f,
+                        paint);
+            }
+
+            //Вывод сообщение о победе
+            if (cups.isEmpty()) {
+                canvas.drawText("Вы победили!", UtilApp.screenX / 2 - 300, UtilApp.screenY / 2 - 50, paint);
+                gameTime -= delayTime;
+            }
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -161,6 +198,9 @@ public class GameView extends SurfaceView implements Runnable {
                     //создание игрока
                     player = new AdvancedAlive(
                             R.drawable.wolf_black, j * width, i * width, 340, 200, 2, 3);
+                } else if (levelMatrix[i][j] == 'c') {
+                    //создание цели
+                    cups.add(new GameObject(R.drawable.chicken, j * width, i * width + 75, width, width / 2));
                 }
             }
         }
@@ -194,7 +234,6 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void pause() {
-
         try {
             isPlaying = false;
             thread.join();
