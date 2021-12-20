@@ -43,6 +43,9 @@ public class GameView extends SurfaceView implements Runnable {
     ArrayList<GameObject> backTrees = new ArrayList<>(),
             frontTrees = new ArrayList<>();
 
+    boolean showingStartMessage = true;
+    Bitmap startMessageImage;
+
     public GameView(GameActivity activity, int screenX, int screenY) {
         super(activity);
 
@@ -65,6 +68,10 @@ public class GameView extends SurfaceView implements Runnable {
         platforms = loadLevel(R.raw.level1);
         plMaxCol = platforms.length;
         plMaxRaw = platforms[0].get(platforms[0].size() - 1).y / plWidth + 1;
+
+        startMessageImage = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(UtilApp.res, R.drawable.start_message),
+                UtilApp.screenX, UtilApp.screenY, false);
 
         lastTime = System.currentTimeMillis();
         gameTime = 0;
@@ -152,6 +159,9 @@ public class GameView extends SurfaceView implements Runnable {
             if (cups.isEmpty()) {
                 canvas.drawText("Вы победили!", UtilApp.screenX / 2 - 300, UtilApp.screenY / 2 - 50, paint);
                 gameTime -= delayTime;
+            } else if (showingStartMessage) {
+                canvas.drawBitmap(startMessageImage, 0, 0, paint);
+                gameTime = -(int) delayTime;
             }
 
             getHolder().unlockCanvasAndPost(canvas);
@@ -277,6 +287,7 @@ public class GameView extends SurfaceView implements Runnable {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        showingStartMessage = false;
         int pointerCount = event.getPointerCount();
         int pointerIndex = event.getActionIndex();
         int action = event.getActionMasked();
