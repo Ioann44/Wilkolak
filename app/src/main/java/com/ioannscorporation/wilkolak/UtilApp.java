@@ -16,7 +16,7 @@ public class UtilApp extends Application {
 
     public static Bitmap GetSubImage(int fullImageRef, int width, int height, int col, int row) {
         Bitmap fullImage = BitmapFactory.decodeResource(UtilApp.res, fullImageRef);
-        return Bitmap.createBitmap(fullImage, height * row, width * col, width, height);
+        return Bitmap.createBitmap(fullImage, width * col, height * row, width, height);
     }
 
     public static Bitmap FlipImage(Bitmap sourceImage, boolean horizontally, boolean vertically) {

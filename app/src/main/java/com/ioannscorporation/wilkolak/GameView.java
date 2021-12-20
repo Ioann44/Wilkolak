@@ -40,6 +40,8 @@ public class GameView extends SurfaceView implements Runnable {
     final int plWidth = 150;
 
     LinkedList<GameObject> cups = new LinkedList<>();
+    ArrayList<GameObject> backTrees = new ArrayList<>(),
+            frontTrees = new ArrayList<>();
 
     public GameView(GameActivity activity, int screenX, int screenY) {
         super(activity);
@@ -96,6 +98,13 @@ public class GameView extends SurfaceView implements Runnable {
             dY = Math.max(dY, 0);
             dY = Math.min(dY, plMaxRaw * plWidth - UtilApp.screenY);
 
+            //отображение фоновых деревьев
+            for (GameObject t : backTrees) {
+                if (player.IsInView(t)) {
+                    canvas.drawBitmap(t.image, t.x - dX, t.y - dY, paint);
+                }
+            }
+
             int colMin = Math.max((player.x - UtilApp.screenX) / plWidth, 0);
             int colMax = Math.min(colMin + UtilApp.screenX * 2 / plWidth, plMaxCol);
             //отображение платформ (возможна оптимизация:
@@ -117,7 +126,15 @@ public class GameView extends SurfaceView implements Runnable {
                     canvas.drawBitmap(cup.image, cup.x - dX, cup.y - dY, paint);
             }
 
+            //отображение игрока
             canvas.drawBitmap(player.image, player.x - dX, player.y - dY, paint);
+
+            //отображение деревьев на переднем плане
+            for (GameObject t : frontTrees) {
+                if (player.IsInView(t)) {
+                    canvas.drawBitmap(t.image, t.x - dX, t.y - dY, paint);
+                }
+            }
 
             //Вывод значения секундомера
             {
@@ -143,6 +160,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     ArrayList<Platform>[] loadLevel(int linkLevelFile) {
         int width = plWidth;
+        int treeWidth = BitmapFactory.decodeResource(UtilApp.res, R.drawable.trees).getWidth() / 3;
         ArrayList<Platform>[] res;
 
         InputStream in = UtilApp.res.openRawResource(linkLevelFile);
@@ -162,7 +180,7 @@ public class GameView extends SurfaceView implements Runnable {
         int tileWidth = BitmapFactory.decodeResource(UtilApp.res, refToTile).getWidth() / 3;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                tileSet[i][j] = UtilApp.GetSubImage(refToTile, tileWidth, tileWidth, i, j);
+                tileSet[i][j] = UtilApp.GetSubImage(refToTile, tileWidth, tileWidth, j, i);
             }
         }
 
@@ -200,7 +218,20 @@ public class GameView extends SurfaceView implements Runnable {
                             R.drawable.wolf_black, j * width, i * width, 340, 200, 2, 3);
                 } else if (levelMatrix[i][j] == 'c') {
                     //создание цели
-                    cups.add(new GameObject(R.drawable.chicken, j * width, i * width + 75, width, width / 2));
+                    cups.add(new GameObject(R.drawable.chicken, j * width, i * width + (width >> 1), width, width >> 1));
+                } else if (levelMatrix[i][j] == 't') {
+                    //создание деревьев на фоне
+                    backTrees.add(new GameObject(
+                            UtilApp.GetSubImage(R.drawable.trees, treeWidth, treeWidth << 1,
+                                    UtilApp.random.nextInt(3),
+                                    UtilApp.random.nextInt(2)),
+                            j * width, (i - 3) * width, width << 1, width << 2));
+                } else if (levelMatrix[i][j] == 'T') {
+                    //создание деревьев на переднем плане
+                    frontTrees.add(new GameObject(
+                            UtilApp.GetSubImage(R.drawable.trees, treeWidth, treeWidth << 1,
+                                    UtilApp.random.nextInt(3), 2),
+                            j * width, (i - 3) * width, width << 1, width << 2));
                 }
             }
         }
