@@ -145,11 +145,23 @@ public class GameView extends SurfaceView implements Runnable {
 
             //Вывод значения секундомера
             {
-                String timeSec = String.valueOf(gameTime / 1000),
+                String timeMin = String.valueOf(gameTime / 60000),
+                        timeSec = String.valueOf(gameTime / 1000 % 60),
                         timeHundredthSec = String.valueOf(gameTime % 1000 / 10);
-                int diffX = timeSec.length() * 100;
+                if (timeHundredthSec.length() == 1) {
+                    timeHundredthSec = '0' + timeHundredthSec;
+                }
+                String timeMsg = "";
+                if (!timeMin.equals("0")) {
+                    timeMsg = timeMin + ':';
+                    if (timeSec.length() == 1) {
+                        timeSec = '0' + timeSec;
+                    }
+                }
+                timeMsg += timeSec + '.' + timeHundredthSec;
+                int diffX = (timeMsg.length() - 3) * 100;
                 canvas.drawText(
-                        timeSec + ':' + timeHundredthSec,
+                        timeMsg,
                         UtilApp.screenX * 0.9f - diffX,
                         UtilApp.screenY * 0.1f,
                         paint);
