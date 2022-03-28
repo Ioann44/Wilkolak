@@ -30,4 +30,13 @@ public class UtilApp extends Application {
         return Bitmap.createBitmap(
                 sourceImage, 0, 0, sourceImage.getWidth(), sourceImage.getHeight(), matrix, true);
     }
+
+    public static boolean gameModeIsMP = false;
+    public static WhoIAm whoIAm = WhoIAm.wolf;
+    public static int numOfPlayers = 1;
+}
+
+enum WhoIAm {
+    wolf,
+    chicken
 }

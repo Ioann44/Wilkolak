@@ -10,6 +10,8 @@ public class AdvancedAlive extends SimpleAlive {
     int animDelay = 10; //frames
     byte durIsRight = 1; //1 - true, 0 - false
 
+    int actionAnimIndex; //only for multiplayer
+
     public AdvancedAlive(int imageRef, int x, int y, int width, int height, int rows, int cols) {
         this.x = x;
         this.y = y;
@@ -31,13 +33,18 @@ public class AdvancedAlive extends SimpleAlive {
     }
 
     public void UpdateImage() {
-        animNum = (animNum + 1) % ((rows + 1) * animDelay);
+        animNum = (animNum + 1) % (cols * animDelay);
         int animI = animNum / animDelay;
         boolean ySpeedIsLow = Math.abs(speedY) < 5;
         if (speedX > 0)
             durIsRight = 1;
         else if (speedX < 0)
             durIsRight = 0;
+
+//        if (UtilApp.gameModeIsMP ) {
+//            image = images[durIsRight][actionAnimIndex][animI];
+//            return;
+//        }
 
         if (ySpeedIsLow) {
             if (speedX != 0) {
@@ -52,5 +59,10 @@ public class AdvancedAlive extends SimpleAlive {
                 image = images[durIsRight][1][2];
             }
         }
+    }
+
+    // only for multiplayer
+    public void UpdateMP() {
+
     }
 }

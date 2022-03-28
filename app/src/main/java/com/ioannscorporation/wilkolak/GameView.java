@@ -34,6 +34,7 @@ public class GameView extends SurfaceView implements Runnable {
     boolean[] touchedIndexes = new boolean[10];
 
     GameObject background;
+    ArrayList<AdvancedAlive> animals = new ArrayList<>(UtilApp.numOfPlayers);
     AdvancedAlive player;
     ArrayList<Platform>[] platforms;
     final int plMaxCol, plMaxRaw;
@@ -169,7 +170,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             //Вывод сообщение о победе
             if (cups.isEmpty()) {
-                canvas.drawText("Вы победили!", UtilApp.screenX / 2 - 300, UtilApp.screenY / 2 - 50, paint);
+                canvas.drawText("Вы победили!", (UtilApp.screenX >> 1) - 300, (UtilApp.screenY >> 1) - 50, paint);
                 gameTime -= delayTime;
             } else if (showingStartMessage) {
                 canvas.drawBitmap(startMessageImage, 0, 0, paint);
@@ -236,11 +237,13 @@ public class GameView extends SurfaceView implements Runnable {
                     res[j].add(new Platform(tileSet[tlY][tlX], j * width, i * width, width));
                 } else if (levelMatrix[i][j] == 'p') {
                     //создание игрока
-                    player = new AdvancedAlive(
-                            R.drawable.wolf_black, j * width, i * width, 340, 200, 2, 3);
+                    if (UtilApp.whoIAm == WhoIAm.wolf)
+                        player = new AdvancedAlive(R.drawable.wolf_black, j * width, i * width, 340, 200, 2, 3);
+                    else if (UtilApp.whoIAm == WhoIAm.chicken)
+                        player = new Chicken(j * width, i * width);
                 } else if (levelMatrix[i][j] == 'c') {
                     //создание цели
-                    cups.add(new GameObject(R.drawable.chicken, j * width, i * width + (width >> 1), width, width >> 1));
+                    cups.add(new GameObject(R.drawable.chicken_food, j * width, i * width + (width >> 1), width, width >> 1));
                 } else if (levelMatrix[i][j] == 't') {
                     //создание деревьев на фоне
                     backTrees.add(new GameObject(
