@@ -30,6 +30,11 @@ public class GameObject {
                 (y + height > obj.y && y < obj.y + obj.height);
     }
 
+    public boolean IsCollide(int x, int y) {
+        return (this.x <= x && x <= this.x + this.width &&
+                this.y <= y && y <= this.y + this.height);
+    }
+
     //Для оптимизации вывода на экран,
     //позволяет отсечь объекты, находящиеся на значительном расстоянии,
     //отсекает НЕ ВСЕ не попадающие в поле зрения объекты.

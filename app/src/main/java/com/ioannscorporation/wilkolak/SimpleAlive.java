@@ -8,7 +8,7 @@ public class SimpleAlive extends GameObject {
             jumpPower = 22;
 
     float speedX = 0, speedY = 0, maxSpeed = 15;
-    public boolean goLeft = false, goRight = false, readyToJump = true;
+    public boolean goLeft = false, goRight = false, goJump = false, readyToJump = true;
 
     public SimpleAlive(int imageRef, int x, int y, int width, int height) {
         super(imageRef, x, y, width, height);
@@ -21,10 +21,9 @@ public class SimpleAlive extends GameObject {
         //update speed
         speedY += gravity;
 
-        if (goLeft && goRight) { // is jumping
-            if (readyToJump) {
-                speedY = jumpPower;
-            }
+        if (goLeft && goRight) {
+            // do nothing, in past jumping was here
+            // now this block allows walking slowly
         } else if (goLeft) {
             speedX = Math.max(-maxSpeed, speedX - acceleration);
         } else if (goRight) {
@@ -35,6 +34,10 @@ public class SimpleAlive extends GameObject {
             } else {
                 speedX = Math.min(0, speedX + acceleration / 2);
             }
+        }
+
+        if (goJump && readyToJump) { // is jumping
+            speedY = jumpPower;
         }
 
         //Сброс возможности прыжка, чтобы не прыгнуть после того как упал с обрыва

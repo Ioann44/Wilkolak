@@ -44,6 +44,8 @@ public class GameView extends SurfaceView implements Runnable {
     ArrayList<GameObject> backTrees = new ArrayList<>(),
             frontTrees = new ArrayList<>();
 
+    Button[] buttons = new Button[3];
+
     boolean showingStartMessage = true;
     Bitmap startMessageImage;
 
@@ -69,6 +71,15 @@ public class GameView extends SurfaceView implements Runnable {
         platforms = loadLevel(R.raw.level1);
         plMaxCol = platforms.length;
         plMaxRaw = platforms[0].get(platforms[0].size() - 1).y / plWidth + 1;
+
+        for (int i = 0; i < 3; i++) {
+            buttons[i] = new Button(R.drawable.arrow_left_button,
+                    0, (int) (UtilApp.screenY * 0.67),
+                    (int) (UtilApp.screenY * 0.23), i * 90);
+        }
+        buttons[Btns.left].x = UtilApp.screenX * 3 / 100;
+        buttons[Btns.right].x = UtilApp.screenX * 5 / 100 + buttons[Btns.left].x + buttons[Btns.left].width;
+        buttons[Btns.up].x = UtilApp.screenX * 97 / 100 - buttons[Btns.up].width;
 
         startMessageImage = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeResource(UtilApp.res, R.drawable.start_message),
@@ -142,6 +153,11 @@ public class GameView extends SurfaceView implements Runnable {
                 if (player.IsInView(t)) {
                     canvas.drawBitmap(t.image, t.x - dX, t.y - dY, paint);
                 }
+            }
+
+            //отображение кнопок
+            for (GameObject button : buttons) {
+                canvas.drawBitmap(button.image, button.x, button.y, paint);
             }
 
             //Вывод значения секундомера
@@ -306,21 +322,29 @@ public class GameView extends SurfaceView implements Runnable {
         int pointerCount = event.getPointerCount();
         int pointerIndex = event.getActionIndex();
         int action = event.getActionMasked();
-        player.goLeft = player.goRight = false;
-        if (action == MotionEvent.ACTION_UP) {
-            return true;
-        }
-        touchedIndexes[pointerIndex] = action != MotionEvent.ACTION_POINTER_UP;
+//        player.goLeft = player.goRight = player.goJump = false;
+        touchedIndexes[pointerIndex] = action != MotionEvent.ACTION_POINTER_UP && action != MotionEvent.ACTION_UP;
+
         for (int i = 0; i < pointerCount; i++) {
             Point touchLoc = new Point((int) event.getX(i), (int) event.getY(i));
             if (touchedIndexes[i]) {
-                if (touchLoc.x < UtilApp.screenX / 2f) {
-                    player.goLeft = true;
-                } else {
-                    player.goRight = true;
+                for (int j = 0; j < 3; j++) {
+                    buttons[j].IsCollide(touchLoc.x, touchLoc.y);
                 }
+//                if (touchLoc.x < UtilApp.screenX / 2f) {
+//                    player.goLeft = true;
+//                } else {
+//                    player.goRight = true;
+//                }
             }
         }
+        player.goLeft = buttons[Btns.left].isPressed;
+        player.goRight = buttons[Btns.right].isPressed;
+        player.goJump = buttons[Btns.up].isPressed;
+        for (int i = 0; i < 3; i++) {
+            buttons[i].UpdateAndReset();
+        }
+
         return true;
     }
 }
