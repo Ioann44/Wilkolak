@@ -6,8 +6,8 @@ public class SimpleAlive extends GameObject {
     float acceleration = 0.75f,
             gravity = -0.5f,
             jumpPower = 22;
+    float speedX = 0, speedY = 0, maxSpeedX = 15, maxSpeedY = 50;
 
-    float speedX = 0, speedY = 0, maxSpeed = 15;
     public boolean goLeft = false, goRight = false, goJump = false, readyToJump = true;
 
     public SimpleAlive(int imageRef, int x, int y, int width, int height) {
@@ -25,9 +25,9 @@ public class SimpleAlive extends GameObject {
             // do nothing, in past jumping was here
             // now this block allows walking slowly
         } else if (goLeft) {
-            speedX = Math.max(-maxSpeed, speedX - acceleration);
+            speedX = Math.max(-maxSpeedX, speedX - acceleration);
         } else if (goRight) {
-            speedX = Math.min(maxSpeed, speedX + acceleration);
+            speedX = Math.min(maxSpeedX, speedX + acceleration);
         } else {
             if (speedX > 0) {
                 speedX = Math.max(0, speedX - acceleration / 2);
@@ -37,11 +37,16 @@ public class SimpleAlive extends GameObject {
         }
 
         if (goJump && readyToJump) { // is jumping
-            speedY = jumpPower;
+            speedY += jumpPower;
         }
+        if (speedY >= 0)
+            speedY = Math.min(speedY, maxSpeedY);
+        else
+            speedY = Math.max(speedY, -maxSpeedY);
 
         //Сброс возможности прыжка, чтобы не прыгнуть после того как упал с обрыва
         //в итоге стоя на поверхности можно прыгать в половине случаев, т.е. 1 0 1 0 1 0 1 0
+        //(возможно в одном из 5 случаев, если смотреть chicken)
         //но это не имеет значения т.к. прыжок можно "зажать"
         readyToJump = false;
 
