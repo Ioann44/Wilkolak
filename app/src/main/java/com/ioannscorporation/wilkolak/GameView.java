@@ -46,8 +46,8 @@ public class GameView extends SurfaceView implements Runnable {
 
     Button[] buttons = new Button[3];
 
-    boolean showingStartMessage = true;
-    Bitmap startMessageImage;
+    boolean showingStartMessage = false; // Сейчас сообщение не нужно
+    Bitmap startMessageImage, foodCounterImage;
 
     public GameView(GameActivity activity, int screenX, int screenY) {
         super(activity);
@@ -84,6 +84,8 @@ public class GameView extends SurfaceView implements Runnable {
         startMessageImage = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeResource(UtilApp.res, R.drawable.start_message),
                 UtilApp.screenX, UtilApp.screenY, false);
+        foodCounterImage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(UtilApp.res, R.drawable.food_counter_icon),
+                UtilApp.screenX * 250 / 158 / 15, UtilApp.screenX / 15, false);
 
         lastTime = System.currentTimeMillis();
         gameTime = 0;
@@ -184,13 +186,17 @@ public class GameView extends SurfaceView implements Runnable {
                         paint);
             }
 
-            //Вывод сообщение о победе
+            //Вывод сообщения о победе, количества оставшихся целей, стартового сообщения
             if (cups.isEmpty()) {
                 canvas.drawText("Вы победили!", (UtilApp.screenX >> 1) - 300, (UtilApp.screenY >> 1) - 50, paint);
                 gameTime -= delayTime;
-            } else if (showingStartMessage) {
-                canvas.drawBitmap(startMessageImage, 0, 0, paint);
-                gameTime = -(int) delayTime;
+            } else {
+                canvas.drawText(String.valueOf(cups.size()), UtilApp.screenX * 5 / 100, UtilApp.screenY * 14 / 100, paint);
+                canvas.drawBitmap(foodCounterImage, UtilApp.screenX * 10 / 100, UtilApp.screenY * 3 / 100, paint);
+                if (showingStartMessage) {
+                    canvas.drawBitmap(startMessageImage, 0, 0, paint);
+                    gameTime = -(int) delayTime;
+                }
             }
 
             getHolder().unlockCanvasAndPost(canvas);
