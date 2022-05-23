@@ -4,33 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background_forest"
     tools:context=".MainActivity">
 
-    <ImageButton
+    <Button
         android:id="@+id/startGameButton"
-        android:layout_width="342dp"
-        android:layout_height="91dp"
-        android:layout_marginBottom="44dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
+        android:layout_width="255dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="32dp"
+        android:background="#0EC89D"
+        android:text="За волка"
+        android:textColor="#0A1B4E"
+        android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/choicePartButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.889"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/start_game" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/choicePartButton"
-        android:layout_width="254dp"
-        android:layout_height="61dp"
-        android:layout_marginBottom="68dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
+        android:layout_width="255dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="128dp"
+        android:background="#0EC89D"
+        android:text="За курицу"
+        android:textColor="#0A1B4E"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.823"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/foodImageView"
+        android:layout_width="465dp"
+        android:layout_height="384dp"
+        android:layout_marginStart="-100dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/choice_level" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/food_counter_icon" />
+
+    <TextView
+        android:id="@+id/startGameTextView"
+        android:layout_width="306dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="34dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Начать игру"
+        android:textColor="#700B0B"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/startGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

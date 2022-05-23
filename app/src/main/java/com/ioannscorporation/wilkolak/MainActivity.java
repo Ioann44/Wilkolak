@@ -2,12 +2,12 @@ package com.ioannscorporation.wilkolak;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    ImageButton startButton, choiceButton;
+    View startButton, choiceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
