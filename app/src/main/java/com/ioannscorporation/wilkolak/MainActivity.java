@@ -21,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             MainActivity.this.startActivity(intent);
             //gameMode is singleplayer
+            UtilApp.gameModeIsMP = false;
             //player is wolf
+            UtilApp.whoIAm = WhoIAm.wolf;
             //only 1 player
         });
         choiceButton.setOnClickListener(v -> {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.startActivity(intent);
             UtilApp.gameModeIsMP = true;
             UtilApp.whoIAm = WhoIAm.chicken; //only for now, in future you will be able to choice
-            UtilApp.numOfPlayers = 2; //only for now
+//            UtilApp.numOfPlayers = 2; //only for now
         });
     }
 }
