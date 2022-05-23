@@ -265,7 +265,10 @@ public class GameView extends SurfaceView implements Runnable {
                         player = new Chicken(j * width, i * width);
                 } else if (levelMatrix[i][j] == 'c') {
                     //создание цели
-                    cups.add(new GameObject(R.drawable.chicken_food, j * width, i * width + (width >> 1), width, width >> 1));
+                    if (UtilApp.whoIAm == WhoIAm.wolf)
+                        cups.add(new GameObject(R.drawable.wolfs_food, j * width, i * width + (width >> 1), width, width >> 1));
+                    else if (UtilApp.whoIAm == WhoIAm.chicken)
+                        cups.add(new GameObject(R.drawable.chickens_food, j * width, i * width, width, width));
                 } else if (levelMatrix[i][j] == 't') {
                     //создание деревьев на фоне
                     backTrees.add(new GameObject(
