@@ -191,7 +191,7 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawText("Вы победили!", (UtilApp.screenX >> 1) - 300, (UtilApp.screenY >> 1) - 50, paint);
                 gameTime -= delayTime;
             } else {
-                canvas.drawText(String.valueOf(cups.size()), UtilApp.screenX * 5 / 100, UtilApp.screenY * 14 / 100, paint);
+                canvas.drawText(String.valueOf(cups.size()), UtilApp.screenX * 5 / 100, UtilApp.screenY * 13 / 100, paint);
                 canvas.drawBitmap(foodCounterImage, UtilApp.screenX * 10 / 100, UtilApp.screenY * 3 / 100, paint);
                 if (showingStartMessage) {
                     canvas.drawBitmap(startMessageImage, 0, 0, paint);
